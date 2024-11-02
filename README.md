@@ -30,4 +30,15 @@ Right click >> Build Path >>  Configure Build Path >> Class Path >> Add External
 **Hibernate Configuration**
 We shall use XML file for configuration however we can do that through Java as well. According to std we shall name the file as hibernate.cfg.xml
 
-In the fie we have used Session factory tag. It is an interface, factory for providing session
+In the file we have used Session factory. It is an interface, factory for providing sessions. It is a thread-safe object and one project should have only Session Factory. Each session helps us to perform Save, Delete, Update, etc like operations. 
+In Hibernate, a SessionFactory is a factory class that creates Session objects and allows users to perform database operations:
+**What it does**
+The SessionFactory is a key component of the JBoss persistence framework class library. It's responsible for creating Session objects, which are used to perform database operations like save, delete, and update. The SessionFactory also handles database connectivity, connection pooling, thread pooling, and JNDI interactions.
+**How it's used**
+Most applications create a single SessionFactory object, which is cached for the duration of the application's lifecycle. This is because creating a SessionFactory object is resource-intensive.
+**How to get a session**
+The SessionFactory has three methods for getting Session objects:
+getCurrentSession(): Returns the session bound to the context.
+openSession(): Opens a new session, which should be closed after all database operations are complete.
+**Related concepts**
+The SessionFactory's JPA companion class is the EntityManagerFactory. Modern applications are recommended to interact with the JPAs as much as possible.
