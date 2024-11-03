@@ -7,14 +7,16 @@
         <property name="connection.url">jdbc:msql://localhost:3306/myhiber</property>
         <property name="connnection.username">root</property>
         <property name="connection.password">root</property>
-        //Each DB hav different dialect so we shall declare it here as well
+        <!--Each DB hav different dialect so we shall declare it here as well-->
         <property name="dialect">org.hibernate.dialect.mySQL5Dialect</property>
-        //Table ho toh update krega nhi toh create krega but agr create likha toh hr bar table create krega
+        <!--Table ho toh update krega nhi toh create krega but agr create likha toh hr bar table create krega-->
+        <!--<property name="hbm2ddl.auto">create</property> it'll be drop the pre existing table and will create a fresh one-->
         <property name="hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
-        //We need to give fully qualified name in here for mapping
+        <!--We need to give fully qualified name in here for mapping-->
         <mapping class="com.StudentEntityClass /"></mapping>
-        //We can use various other properties as well
+        <mapping class="com.Address /"></mapping>
+        <!--We can use various other properties as well-->
     </session-factory>
 </hibernate-configuration>
 
