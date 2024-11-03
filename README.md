@@ -119,3 +119,13 @@ Ex: `public enum TemporalType {
 
 There many other important annotations, for instance: @OneToOne, @OneToMany, @ManytoOne, @JoinColumn etc.
 
+To fetch data we need not to write SELECT query at our end at, instead we use primary key to fetch data using entity class from the table.
+Session interface have two method to fetch data get() and post().
+<h5>FETCH DATA --> To get object(data) using hibernate we have two methods:</h5>
+**get():** get method of Hibernate Session returns null if object is not found in cache as well as on database.
+            get() involves database hit if object doesn't exists in Session Cache and returns a fully initialized object which may involve several databaase call.
+            Use if you are not sure that object exists in DB or not.
+
+**load():** load() method throws ObjectNotFoundException if object is not found on cache as well as on database but never return null.
+            load method can return proxy in place and only initialize the object or hit the database if any method other than getId() is called on persistent or entity object. This lazy initialization increases the performance.
+            Use if you are sure that object exists.
