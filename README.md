@@ -42,3 +42,47 @@ getCurrentSession(): Returns the session bound to the context.
 openSession(): Opens a new session, which should be closed after all database operations are complete.
 **Related concepts**
 The SessionFactory's JPA companion class is the EntityManagerFactory. Modern applications are recommended to interact with the JPAs as much as possible.
+
+**Hibernate Program using Annotations**
+We create entity class and we can use map tables to entity using in two ways:
+-- Using XML
+-- Using Annotations
+
+**Annotations**
+The @Entity and @Table annotations serve different purposes in JPA (Java Persistence API):
+
+@Entity(name="Saloni"):
+
+@Entity is used to mark a class as a JPA entity, meaning it maps to a database table.
+The name attribute specifies the name of the entity, which JPA uses internally (for example, in JPQL queries).
+When you use @Entity(name="Saloni"), the entity is referred to as "Saloni" in the persistence context, even if the table it maps to has a different name.
+
+`@Entity(name = "SaloniEntity")
+@Table(name = "Saloni")
+public class Person {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+}
+`
+Now, when querying this entity, you refer to it as SaloniEntity in JPQL queries, even though the class is named Person and the database table is Saloni.
+
+`import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.List;
+
+public class PersonRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public List<Person> findByName(String name) {
+        return entityManager.createQuery(
+                "SELECT s FROM SaloniEntity s WHERE s.name = :name", Person.class)
+                .setParameter("name", name)
+                .getResultList();
+    }
+}`
