@@ -4,7 +4,8 @@ package com.tut;
 //@Entity(name = "STUDENT") in here we are specifying the table name in the database
 @Table(name = "students_deatails")
 public class Student {
-
+//Marks Id as primary key
+    @Id
     private int id;
     private String name;
     private String city;
