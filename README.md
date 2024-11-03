@@ -66,6 +66,7 @@ public class Person {
     private String name;
 }
 `
+
 Now, when querying this entity, you refer to it as SaloniEntity in JPQL queries, even though the class is named Person and the database table is Saloni.
 
 `import javax.persistence.EntityManager;
@@ -86,3 +87,35 @@ public class PersonRepository {
                 .getResultList();
     }
 }`
+
+**@Table** -- It is used to change the table details.
+**@Id** -- use to mark column as id(primary key).
+**@GeneratedValue** -- hibernate will automatically generate values for that using an internal sequence. Therefore, we won't have to do that manually.
+
+`  @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;`
+
+**@Column** -- Can be used to specify column mappings. Ex: to change the column name in the associated table in teh DB.
+**@Transient** -- This tells hibernate not to save this field.
+**@Temporal** -- @Temporal over a date field tells hibernate the format in which the date needs to be saved.
+Ex: `public enum TemporalType {
+
+    /** Map as <code>java.sql.Date</code> */
+    DATE, 
+
+    /** Map as <code>java.sql.Time</code> */
+    TIME, 
+
+    /** Map as <code>java.sql.Timestamp</code> */
+    TIMESTAMP
+}`
+`@Column(name = "assigned_on", nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date assignedIdDate;`
+
+@**Lob** -- @Lob tells hibernate that this is a larger object, not a simple object.
+
+There many other important annotations, for instance: @OneToOne, @OneToMany, @ManytoOne, @JoinColumn etc.
+
