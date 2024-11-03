@@ -2,6 +2,7 @@ package com.tut;
 
 @Entity
 //@Entity(name = "STUDENT") in here we are specifying the table name in the database
+@Table(name = "students_deatails")
 public class Student {
 
     private int id;
