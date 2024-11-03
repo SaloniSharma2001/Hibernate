@@ -13,6 +13,25 @@ publuc class App{
 
         System.out.println("Factory created");
         System.out.println("Factory closed?" factory.isClosed());
+
+       Student st = new Student();
+       //Then set the values in Student st object and save it to the database
+        st.setName("John Doe");
+        st.setAge(25);
+        st.setCity("Delhi");
+        System.out.println("Student details: " + st);
+
+        //It gives currently running session
+        //Session session = factory.getCurrentSession();
+        //Gives us a new session each time
+        Session session = factory.openSession();
+        session.beginTransaction();
+        session.save(st);
+        session.getTransaction().commit();
+        session.close();
+
+        System.out.println("Student saved successfully");
+        System.out.println("Factory closed?" + factory.isClosed());
     }
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
@@ -35,7 +54,4 @@ publuc class App{
         getSessionFactory().close();
     }
 
-    public static void main(String[] args) {
-        // Do nothing
-    }
 }

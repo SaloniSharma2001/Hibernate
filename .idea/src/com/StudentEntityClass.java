@@ -28,4 +28,7 @@ public class Student {
         this.id = id;
     }
 
+    public String toString() {
+        return this.id + " : " + this.name + " : " + this.city;
+    }
 }
