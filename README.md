@@ -123,6 +123,7 @@ There many other important annotations, for instance: @OneToOne, @OneToMany, @Ma
 To fetch data we need not to write SELECT query at our end at, instead we use primary key to fetch data using entity class from the table.
 Session interface have two method to fetch data get() and post().
 <h5>FETCH DATA --> To get object(data) using hibernate we have two methods:</h5>
+
 **get():** get method of Hibernate Session returns null if object is not found in cache as well as on database.
             get() involves database hit if object doesn't exists in Session Cache and returns a fully initialized object which may involve several databaase call.
             Use if you are not sure that object exists in DB or not.
@@ -130,3 +131,33 @@ Session interface have two method to fetch data get() and post().
 **load():** load() method throws ObjectNotFoundException if object is not found on cache as well as on database but never return null.
             load method can return proxy in place and only initialize the object or hit the database if any method other than getId() is called on persistent or entity object. This lazy initialization increases the performance.
             Use if you are sure that object exists.
+
+
+<p align="center"> @Embeddable Annotation </p>
+These annotations are used in combination to allow the properties of one class to be included as a value type in another class and then be persisted in the database as part of the containing class.
+**For instance:**
+
+Entity 1
+
+`Class Student{
+int id;
+String name
+Private Certificate;
+}`
+
+Entity 2
+
+`@Embeddable
+Class Certificate{
+String name;
+String duration;
+}
+`
+
+If we don't have table name for Entity class 2 and we want to embed it in 1 so that at the time of saving the data hibernate create the table mapping with name of the column of the 2nd class, we shall use _@Embeddable _annotation.
+
+<p align="center"> One To One Mapping </p>
+One to one represents that a single entity is associated with a single instance of the other entity. An instance of a source entity can be at most mapped to one instance of the target entity. 
+In database management systems one-to-one mapping is of two types-
+<ul>One-to-one unidirectional</ul>
+<ul>One-to-one bidirectional</ul>
