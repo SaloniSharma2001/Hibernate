@@ -14,8 +14,10 @@
         <property name="hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
         <!--We need to give fully qualified name in here for mapping-->
-        <mapping class="com.StudentEntityClass /"></mapping>
-        <mapping class="com.Address /"></mapping>
+        <mapping class="com.tut.StudentEntityClass /"></mapping>
+        <mapping class="com.tut.Address /"></mapping>
+        <mapping class="com.map.AnswerEntity /"></mapping>
+        <mapping class="com.map.QuestionEntity /"></mapping>
         <!--We can use various other properties as well-->
     </session-factory>
 </hibernate-configuration>

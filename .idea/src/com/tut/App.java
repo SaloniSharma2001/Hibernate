@@ -17,8 +17,8 @@ publuc class App{
         //Create a new Student object and set its properties.
        Student st = new Student();
        //Then set the values in Student st object and save it to the database
+        st.setId(25);
         st.setName("John Doe");
-        st.setAge(25);
         st.setCity("Delhi");
         System.out.println("Student details: " + st);
 
