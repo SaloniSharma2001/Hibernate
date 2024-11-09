@@ -8,6 +8,8 @@ ORM stands for Object Relational Mapping
 - It is a Java Framework that simplifies the development of Java application to interact with the database.
 - It simplifies the JDBC work and manual DAO not needed because it takes care of it.
 - It is an ORM tool, Open source, lightweight. (Object --  table mapping)
+- Used in teh data layer of application.
+- Implements JPA (Java Persistence API) A set of standards that have been prescribed for any persistent implementation that needs to be met in order to get certified as a Java persistence API implementation so, it means is thar it follows the rules that have been set in the Java persistence API specification. Later if we don't want to use the hibernate and switch to different framework that follows the same JPA API we can do that with minimal changes.
 - Entire concept of Hibernate is based on POJOs [Plain Old Java Object] (simple classes without restriction)
 - Hibernate is a non-invasive framework, it won't force the programmers to extend/implement any class/interface.
 - It was developed by Gavin King in 2001.
@@ -57,6 +59,7 @@ The @Entity and @Table annotations serve different purposes in JPA (Java Persist
 @Entity is used to mark a class as a JPA entity, meaning it maps to a database table.
 The name attribute specifies the name of the entity, which JPA uses internally (for example, in JPQL queries).
 When you use @Entity(name="Saloni"), the entity is referred to as "Saloni" in the persistence context, even if the table it maps to has a different name.
+In short, If we have marked a name attribute to an Entity class, it will create the table with name specified in the attribute part instead of taking on the name of the class itself.
 
 `@Entity(name = "SaloniEntity")
 @Table(name = "Saloni")
@@ -118,6 +121,27 @@ Ex: `public enum TemporalType {
 
 @**Lob** -- @Lob tells hibernate that this is a larger object, not a simple object.
 
+**@Basic** -- A basic type maps direcly to a column in the database. These includes Java primitives and their wrapper classes. The @Basic annotation on a field or a property signifies that it’s a basic type and Hibernate should use the standard mapping for its persistence.
+-  it’s an optional annotation.
+-  we don’t specify the @Basic annotation for a basic type attribute, it is implicitly assumed, and the default values of this annotation apply.
+-  @Basic annotation has two attributes, optional and fetch.
+-  The optional attribute is a boolean parameter that defines whether the marked field or property allows null. It defaults to true. So, if the field is not a primitive type, the underlying column is assumed to be nullable by default.
+-  The fetch attribute accepts a member of the enumeration Fetch, which specifies whether the marked field or property should be lazily loaded or eagerly fetched. It defaults to FetchType.EAGER, but we can permit lazy loading by setting it to FetchType.LAZY.
+(Lazy loading will only make sense when we have a large Serializable object mapped as a basic type, as in that case, the field access cost can be significant.)
+` 
+//If we want not null and  and lazy load as well.
+@Basic(optional = false, fetch = FetchType.LAZY)
+    private String name;`
+
+- We should explicitly use the @Basic annotation when willing to deviate from the default values of optional and fetch.
+
+**_JPA @Basic vs @Column_**
+
+1) Attributes of the @Basic annotation are applied to JPA entities, whereas the attributes of @Column are applied to the database columns.
+2) @Basic annotation’s optional attribute defines whether the entity field can be null or not; on the other hand, @Column annotation’s nullable attribute specifies whether the corresponding database column can be null.
+3) We can use @Basic to indicate that a field should be lazily loaded.
+4) The @Column annotation allows us to specify the name of the mapped database column.
+
 There many other important annotations, for instance: @OneToOne, @OneToMany, @ManytoOne, @JoinColumn etc.
 
 To fetch data we need not to write SELECT query at our end at, instead we use primary key to fetch data using entity class from the table.
@@ -161,3 +185,12 @@ One to one represents that a single entity is associated with a single instance 
 In database management systems one-to-one mapping is of two types-
 <ul>One-to-one unidirectional</ul>
 <ul>One-to-one bidirectional</ul>
+
+<p align="center"> One To Many Mapping </p>
+<p align="center">  Many To Many Mapping </p>
+
+
+<p align="center">
+  <a href="https://www.baeldung.com/jpa-basic-annotation#conclusion" target="_blank">Ref</a>
+  <a href="https://www.baeldung.com/hibernate-lazy-eager-loading" target="_blank">Ref</a>
+</p>
