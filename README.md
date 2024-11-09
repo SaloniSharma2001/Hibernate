@@ -191,6 +191,6 @@ In database management systems one-to-one mapping is of two types-
 
 
 <p align="center">
-  <a href="https://www.baeldung.com/jpa-basic-annotation#conclusion" target="_blank">Ref</a>
-  <a href="https://www.baeldung.com/hibernate-lazy-eager-loading" target="_blank">Ref</a>
+  <a href="https://www.baeldung.com/jpa-basic-annotation#conclusion" target="_blank">Ref-Basic-Annotation</a>
+  <a href="https://www.baeldung.com/hibernate-lazy-eager-loading" target="_blank">Ref-Lazy-Eager-Loading</a>
 </p>
