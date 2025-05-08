@@ -37,6 +37,7 @@ In Hibernate, a SessionFactory is a factory class that creates Session objects a
 
 **What it does**
 The SessionFactory is a key component of the JBoss persistence framework class library. It's responsible for creating Session objects, which are used to perform database operations like save, delete, and update. The SessionFactory also handles database connectivity, connection pooling, thread pooling, and JNDI interactions.
+
 **How it's used**
 Most applications create a single SessionFactory object, which is cached for the duration of the application's lifecycle. This is because creating a SessionFactory object is resource-intensive.
 **How to get a session**
@@ -92,17 +93,23 @@ public class PersonRepository {
     }
 }`
 
+
 **@Table** -- It is used to change the table details.
+
 **@Id** -- use to mark column as id(primary key).
+
 **@GeneratedValue** -- hibernate will automatically generate values for that using an internal sequence. Therefore, we won't have to do that manually.
 
 `  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;`
+    
 
 **@Column** -- Can be used to specify column mappings. Ex: to change the column name in the associated table in teh DB.
+
 **@Transient** -- This tells hibernate not to save this field.
+
 **@Temporal** -- @Temporal over a date field tells hibernate the format in which the date needs to be saved.
 Ex: `public enum TemporalType {
 
@@ -115,11 +122,14 @@ Ex: `public enum TemporalType {
     /** Map as <code>java.sql.Timestamp</code> */
     TIMESTAMP
 }`
+
 `@Column(name = "assigned_on", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date assignedIdDate;`
+    
 
 @**Lob** -- @Lob tells hibernate that this is a larger object, not a simple object.
+
 
 **@Basic** -- A basic type maps direcly to a column in the database. These includes Java primitives and their wrapper classes. The @Basic annotation on a field or a property signifies that it’s a basic type and Hibernate should use the standard mapping for its persistence.
 -  it’s an optional annotation.
