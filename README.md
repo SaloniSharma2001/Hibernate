@@ -8,6 +8,8 @@ ORM stands for Object Relational Mapping
 - It is a Java Framework that simplifies the development of Java application to interact with the database.
 - It simplifies the JDBC work and manual DAO not needed because it takes care of it.
 - It is an ORM tool, Open source, lightweight. (Object --  table mapping)
+- Used in teh data layer of application.
+- Implements JPA (Java Persistence API) A set of standards that have been prescribed for any persistent implementation that needs to be met in order to get certified as a Java persistence API implementation so, it means is thar it follows the rules that have been set in the Java persistence API specification. Later if we don't want to use the hibernate and switch to different framework that follows the same JPA API we can do that with minimal changes.
 - Entire concept of Hibernate is based on POJOs [Plain Old Java Object] (simple classes without restriction)
 - Hibernate is a non-invasive framework, it won't force the programmers to extend/implement any class/interface.
 - It was developed by Gavin King in 2001.
@@ -35,6 +37,7 @@ In Hibernate, a SessionFactory is a factory class that creates Session objects a
 
 **What it does**
 The SessionFactory is a key component of the JBoss persistence framework class library. It's responsible for creating Session objects, which are used to perform database operations like save, delete, and update. The SessionFactory also handles database connectivity, connection pooling, thread pooling, and JNDI interactions.
+
 **How it's used**
 Most applications create a single SessionFactory object, which is cached for the duration of the application's lifecycle. This is because creating a SessionFactory object is resource-intensive.
 **How to get a session**
@@ -52,11 +55,12 @@ We create entity class and we can map tables to entity in two ways:
 **Annotations**
 The @Entity and @Table annotations serve different purposes in JPA (Java Persistence API):
 
-@Entity(name="Saloni"):
+**@Entity(name="Saloni"):**
 
 @Entity is used to mark a class as a JPA entity, meaning it maps to a database table.
 The name attribute specifies the name of the entity, which JPA uses internally (for example, in JPQL queries).
 When you use @Entity(name="Saloni"), the entity is referred to as "Saloni" in the persistence context, even if the table it maps to has a different name.
+In short, If we have marked a name attribute to an Entity class, it will create the table with name specified in the attribute part instead of taking on the name of the class itself.
 
 `@Entity(name = "SaloniEntity")
 @Table(name = "Saloni")
@@ -89,17 +93,23 @@ public class PersonRepository {
     }
 }`
 
+
 **@Table** -- It is used to change the table details.
+
 **@Id** -- use to mark column as id(primary key).
+
 **@GeneratedValue** -- hibernate will automatically generate values for that using an internal sequence. Therefore, we won't have to do that manually.
 
 `  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;`
+    
 
 **@Column** -- Can be used to specify column mappings. Ex: to change the column name in the associated table in teh DB.
+
 **@Transient** -- This tells hibernate not to save this field.
+
 **@Temporal** -- @Temporal over a date field tells hibernate the format in which the date needs to be saved.
 Ex: `public enum TemporalType {
 
@@ -112,11 +122,35 @@ Ex: `public enum TemporalType {
     /** Map as <code>java.sql.Timestamp</code> */
     TIMESTAMP
 }`
+
 `@Column(name = "assigned_on", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date assignedIdDate;`
+    
 
 @**Lob** -- @Lob tells hibernate that this is a larger object, not a simple object.
+
+
+**@Basic** -- A basic type maps direcly to a column in the database. These includes Java primitives and their wrapper classes. The @Basic annotation on a field or a property signifies that it’s a basic type and Hibernate should use the standard mapping for its persistence.
+-  it’s an optional annotation.
+-  we don’t specify the @Basic annotation for a basic type attribute, it is implicitly assumed, and the default values of this annotation apply.
+-  @Basic annotation has two attributes, optional and fetch.
+-  The optional attribute is a boolean parameter that defines whether the marked field or property allows null. It defaults to true. So, if the field is not a primitive type, the underlying column is assumed to be nullable by default.
+-  The fetch attribute accepts a member of the enumeration Fetch, which specifies whether the marked field or property should be lazily loaded or eagerly fetched. It defaults to FetchType.EAGER, but we can permit lazy loading by setting it to FetchType.LAZY.
+(Lazy loading will only make sense when we have a large Serializable object mapped as a basic type, as in that case, the field access cost can be significant.)
+` 
+//If we want not null and  and lazy load as well.
+@Basic(optional = false, fetch = FetchType.LAZY)
+    private String name;`
+
+- We should explicitly use the @Basic annotation when willing to deviate from the default values of optional and fetch.
+
+**_JPA @Basic vs @Column_**
+
+1) Attributes of the @Basic annotation are applied to JPA entities, whereas the attributes of @Column are applied to the database columns.
+2) @Basic annotation’s optional attribute defines whether the entity field can be null or not; on the other hand, @Column annotation’s nullable attribute specifies whether the corresponding database column can be null.
+3) We can use @Basic to indicate that a field should be lazily loaded.
+4) The @Column annotation allows us to specify the name of the mapped database column.
 
 There many other important annotations, for instance: @OneToOne, @OneToMany, @ManytoOne, @JoinColumn etc.
 
@@ -133,7 +167,7 @@ Session interface have two method to fetch data get() and post().
             Use if you are sure that object exists.
 
 
-<p align="center"> @Embeddable Annotation </p>
+<p align="center"> **@Embeddable Annotation** </p>
 These annotations are used in combination to allow the properties of one class to be included as a value type in another class and then be persisted in the database as part of the containing class.
 **For instance:**
 
@@ -156,8 +190,59 @@ String duration;
 
 If we don't have table name for Entity class 2 and we want to embed it in 1 so that at the time of saving the data hibernate create the table mapping with name of the column of the 2nd class, we shall use _@Embeddable _annotation.
 
-<p align="center"> One To One Mapping </p>
+
+Mapping: Every Entity class can be mapped and the mapping can be uni-directional or bi-directional.
+
+<p align="center"> **One To One Mapping** </p>
 One to one represents that a single entity is associated with a single instance of the other entity. An instance of a source entity can be at most mapped to one instance of the target entity. 
-In database management systems one-to-one mapping is of two types-
+In database management systems one-to-one mapping is of two types:-
+
 <ul>One-to-one unidirectional</ul>
 <ul>One-to-one bidirectional</ul>
+
+![image](https://github.com/user-attachments/assets/8029adcc-ca37-446b-a1c7-cb1b4468055b) 
+
+mappedBy property in @OneToOne mapping
+In OneToOne mapping if we don't use mapped by and do bidirectional mapping, the result after the code execution will give us both table from question and answer entity having one column dedicated to foreign key. For question, it will be answer's primary key and for Answer table fk will be question's primary key. However if we use mapped by in any of these entity only that table will contain the mapping data and it will work same as bidirectional OneToOne mapping.
+
+<p align="center"> **One To Many Mapping** </p>
+One to many represents that one table can have multiple mapping to a different table. Here also we can do bidirectional mapping and upon mapping their will be third table dedicated to bidirectional mapping. To avoid the creation of third table we can use 
+
+<p align="center">  **Many To Many Mapping** </p>
+![image](https://github.com/user-attachments/assets/9d65df3a-cd9f-4ef4-a9e4-90838789bba6)
+
+<p>
+
+**Hibernate Fetching Technique**
+
+**_Fetch Type_**
+
+There are two type fetching technique in hibernate:-
+
+<li>Eager</li> 
+It is a design pattern in which data loading occurs on the spot.
+Ex: If we are loading question from question table where answer's pk is also a mapped by any kind of mapping then everything including answer data will be loaded all at once.
+
+<li>Lazy</li>
+In Lazy loading, associated data loads only when we explicitly call getter or size method.
+Ex: If we have mapped question and answer table then only question will be loaded if we are trying to get the question table data and mapped answer table will be loaded if and only if we call getter and setter or size method on any of the answer property.
+
+![image](https://github.com/user-attachments/assets/fa513132-1193-44c6-9af1-29d99f2c48e2)
+
+Bydefault if we haven't put any attribute value in mapping annotation related to fetch, for example: @OneToMany(mappedBy="question", fetch = FetchType.EAGER) or FetchType.LAZY then by default lazy loading will happend and data won't be laoded till we call above mentioned method on that.
+
+To fetch everything at once we will have to set fetch = FetchType.EAGER
+
+**HIBERNATE/PERSISTENCE Lifecycle states**
+
+There are 4 states of object before data gets saved in database:
+_1) Transient_: 
+_2) Persistent_:
+_3) Detached_:
+_4) Removed_:
+    
+**Refference**
+  <Br>
+  <a href="https://www.baeldung.com/jpa-basic-annotation#conclusion" target="_blank">Ref-Basic-Annotation</a><Br>
+  <a href="https://www.baeldung.com/hibernate-lazy-eager-loading" target="_blank">Ref-Lazy-Eager-Loading</a>
+</p>
