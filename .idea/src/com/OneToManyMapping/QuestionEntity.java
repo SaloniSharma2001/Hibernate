@@ -2,10 +2,10 @@ package com.OneToOneMapping;
 
 @Entity
 public class QuestionEntity {
-    public QuestionEntity(int questionid, String question, AnswerEntity answer) {
+    public QuestionEntity(int questionid, String question, List<AnswerEntity> answers) {
         this.questionid = questionid;
         this.question = question;
-        this.answer = answer;
+        this.answers = answers;
     }
 
     public QuestionEntity() {
@@ -28,24 +28,26 @@ public class QuestionEntity {
         this.question = question;
     }
 
-    public AnswerEntity getAnswer() {
-        return answer;
+    public List<AnswerEntity> getAnswers() {
+        return answers;
     }
 
-    public void setAnswer(AnswerEntity answer) {
-        this.answer = answer;
+    public void setAnswers(List<AnswerEntity> answers) {
+        this.answers = answers;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private int questionid;
+
+    @ManyToOne
     @Column(name = "question")
     private String question;
 
-    //This will add a one-to-one relationship with AnswerEntity and
-    // QuestionEntity will have foreign key of answer_id
-    @OneToOne
-    @JoinColumn(name = "a_id", referencedColumnName = "answer_id")
-    private AnswerEntity answer;
+    //This will add a one-to-many relationship with AnswerEntity
+    //We got a new table mapped with question and answer primary key
+    //We can make the mapping in question table  by doint the following
+    @OneToMany(mappedBy = "question")
+    private List<AnswerEntity> answers;
 }
