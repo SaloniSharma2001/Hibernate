@@ -55,7 +55,7 @@ We create entity class and we can map tables to entity in two ways:
 **Annotations**
 The @Entity and @Table annotations serve different purposes in JPA (Java Persistence API):
 
-@Entity(name="Saloni"):
+**@Entity(name="Saloni"):**
 
 @Entity is used to mark a class as a JPA entity, meaning it maps to a database table.
 The name attribute specifies the name of the entity, which JPA uses internally (for example, in JPQL queries).
@@ -167,7 +167,7 @@ Session interface have two method to fetch data get() and post().
             Use if you are sure that object exists.
 
 
-<p align="center"> @Embeddable Annotation </p>
+<p align="center"> **@Embeddable Annotation** </p>
 These annotations are used in combination to allow the properties of one class to be included as a value type in another class and then be persisted in the database as part of the containing class.
 **For instance:**
 
@@ -190,17 +190,56 @@ String duration;
 
 If we don't have table name for Entity class 2 and we want to embed it in 1 so that at the time of saving the data hibernate create the table mapping with name of the column of the 2nd class, we shall use _@Embeddable _annotation.
 
-<p align="center"> One To One Mapping </p>
+
+Mapping: Every Entity class can be mapped and the mapping can be uni-directional or bi-directional.
+
+<p align="center"> **One To One Mapping** </p>
 One to one represents that a single entity is associated with a single instance of the other entity. An instance of a source entity can be at most mapped to one instance of the target entity. 
-In database management systems one-to-one mapping is of two types-
+In database management systems one-to-one mapping is of two types:-
+
 <ul>One-to-one unidirectional</ul>
 <ul>One-to-one bidirectional</ul>
 
-<p align="center"> One To Many Mapping </p>
-<p align="center">  Many To Many Mapping </p>
+![image](https://github.com/user-attachments/assets/8029adcc-ca37-446b-a1c7-cb1b4468055b) 
 
+mappedBy property in @OneToOne mapping
+In OneToOne mapping if we don't use mapped by and do bidirectional mapping, the result after the code execution will give us both table from question and answer entity having one column dedicated to foreign key. For question, it will be answer's primary key and for Answer table fk will be question's primary key. However if we use mapped by in any of these entity only that table will contain the mapping data and it will work same as bidirectional OneToOne mapping.
+
+<p align="center"> **One To Many Mapping** </p>
+One to many represents that one table can have multiple mapping to a different table. Here also we can do bidirectional mapping and upon mapping their will be third table dedicated to bidirectional mapping. To avoid the creation of third table we can use 
+
+<p align="center">  **Many To Many Mapping** </p>
+![image](https://github.com/user-attachments/assets/9d65df3a-cd9f-4ef4-a9e4-90838789bba6)
 
 <p>
+
+**Hibernate Fetching Technique**
+
+**_Fetch Type_**
+
+There are two type fetching technique in hibernate:-
+
+<li>Eager</li> 
+It is a design pattern in which data loading occurs on the spot.
+Ex: If we are loading question from question table where answer's pk is also a mapped by any kind of mapping then everything including answer data will be loaded all at once.
+
+<li>Lazy</li>
+In Lazy loading, associated data loads only when we explicitly call getter or size method.
+Ex: If we have mapped question and answer table then only question will be loaded if we are trying to get the question table data and mapped answer table will be loaded if and only if we call getter and setter or size method on any of the answer property.
+
+![image](https://github.com/user-attachments/assets/fa513132-1193-44c6-9af1-29d99f2c48e2)
+
+Bydefault if we haven't put any attribute value in mapping annotation related to fetch, for example: @OneToMany(mappedBy="question", fetch = FetchType.EAGER) or FetchType.LAZY then by default lazy loading will happend and data won't be laoded till we call above mentioned method on that.
+
+To fetch everything at once we will have to set fetch = FetchType.EAGER
+
+**HIBERNATE/PERSISTENCE Lifecycle states**
+
+There are 4 states of object before data gets saved in database:
+_1) Transient_: 
+_2) Persistent_:
+_3) Detached_:
+_4) Removed_:
     
 **Refference**
   <Br>
