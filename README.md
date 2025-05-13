@@ -205,10 +205,10 @@ In database management systems one-to-one mapping is of two types:-
 mappedBy property in @OneToOne mapping
 In OneToOne mapping if we don't use mapped by and do bidirectional mapping, the result after the code execution will give us both table from question and answer entity having one column dedicated to foreign key. For question, it will be answer's primary key and for Answer table fk will be question's primary key. However if we use mapped by in any of these entity only that table will contain the mapping data and it will work same as bidirectional OneToOne mapping.
 
-<p align="center"> **One To Many Mapping** </p>
+<p align="center"> One To Many Mapping </p>
 One to many represents that one table can have multiple mapping to a different table. Here also we can do bidirectional mapping and upon mapping their will be third table dedicated to bidirectional mapping. To avoid the creation of third table we can use 
 
-<p align="center">  **Many To Many Mapping** </p>
+<p align="center">  Many To Many Mapping </p>
 ![image](https://github.com/user-attachments/assets/9d65df3a-cd9f-4ef4-a9e4-90838789bba6)
 
 <p>
@@ -235,11 +235,154 @@ To fetch everything at once we will have to set fetch = FetchType.EAGER
 
 **HIBERNATE/PERSISTENCE Lifecycle states**
 
-There are 4 states of object before data gets saved in database:
-_1) Transient_: 
-_2) Persistent_:
-_3) Detached_:
-_4) Removed_:
+We have database and _session Object_, where in database we save relational data in tabular form but in session Object or hibernate session Object acts as a mediator, we have some methods in it such as create, update, delete, save, etc using which we can manipulate data in database.
+
+The Hibernate life cycle consists of four main states: Transient, Persistent, Detached, and Removed. Each of these states represents a specific state of an object in the Hibernate framework.
+
+_1) Transient_: When we create an object and object's variables has been initialized. (Object is neither in database nor in session).
+
+_2) Persistent_: When we call save method from session this data will be associated with session and session will have referrence to this object and session will put the data in persistent state and data will be saved in database table. So if we change the value of an object which is in persistent state it's value will change in db table as well. It is synchronized in both session referrence and db table. If we close the session, object referrence will not be part of session. Object is synchronized with database and session Object while object is in persistent state.
+
+_3) Detached_: After closing session or clearing session, object will not be associated with session and onject referrence from the session Object but object data will be present in database and this state is known as detached state. If we call update or any session Object method on data object, it will again go in persistent state.
+
+_4) Removed_: If our data object is still part of session Object and it is in persistent state and we call delete on it then the value will be deleted from database table and the object will be in removed state as it will only be part of session Object now.
+
+A Session is used to get a physical connection with a database. The Session object is lightweight and designed to be instantiated each time an interaction is needed with the database. Persistent objects are saved and retrieved through a Session object.
+
+The session objects should not be kept open for a long time because they are not usually thread safe and they should be created and destroyed them as needed. The main function of the Session is to offer, create, read, and delete operations for instances of mapped entity classes.
+
+**Hibernate Lifecycle | States in Hibernate: Transient, Persistent, Detached, Removed**
+
+![image](https://github.com/user-attachments/assets/d771cf92-79a6-4fe4-be22-a0d545d18db9)
+
+
+Transient State
+When an object is created using the “new” keyword, it is in the transient state. The object is not associated with any Hibernate session, and no database operations are performed on it. The object is simply a plain Java object (POJO) that is not yet persisted in the database.
+
+Code Example:
+
+`// Creating a new object in the transient state
+Employee employee = new Employee();
+employee.setName("John");
+employee.setAge(30);`
+
+Persistent State
+When an object is associated with a Hibernate session, it enters the persistent state. In this state, the object is associated with a specific Hibernate session and is actively managed by Hibernate. Any changes made to the object will be tracked by Hibernate and will be persisted to the database when the session is flushed.
+
+There are two sub-states of the persistent state: Transient-Persistent and Persistent-Detached.
+
+Transient-Persistent State
+When an object is first associated with a Hibernate session, it is in the Transient-Persistent state. This means that the object is newly created, and its state is not yet synchronized with the database. Any changes made to the object in this state will be persisted to the database when the session is flushed.
+
+Code Example:
+
+`// Creating a new object in the Transient-Persistent state
+Employee employee = new Employee();
+employee.setName("John");
+employee.setAge(30); 
+// Associating the object with a Hibernate session
+Session session = HibernateUtil.getSessionFactory().openSession();
+session.beginTransaction();
+session.save(employee);`
+
+
+Persistent-Detached State
+On the other hand, when an object is already in the database and is loaded into a Hibernate session, it is in the Persistent-Detached state. Any changes made to the object in this state will also be tracked by Hibernate and will be persisted to the database when the session is flushed.
+
+Code Example:
+
+`// Loading an existing object into a Hibernate session
+Session session = HibernateUtil.getSessionFactory().openSession();
+Employee employee = session.get(Employee.class, 1L); 
+// Modifying the object in the Persistent-Detached state
+employee.setName("Alice"); 
+// Persisting the changes to the database
+session.beginTransaction();
+session.update(employee);`
+
+Detached State
+When a persistent object is no longer associated with a Hibernate session, it enters the detached state. This means that the object is no longer actively managed by Hibernate, and any changes made to it will not be persisted to the database. However, the object is still a valid Java object and can be re-associated with a Hibernate session in the future.
+
+Code Example:
+
+`// Loading an existing object into a Hibernate session
+Session session = HibernateUtil.getSessionFactory().openSession();
+Employee employee = session.get(Employee.class, 1L); 
+// Detaching the object from the Hibernate session
+session.evict(employee); 
+// Modifying the object in the Detached state
+employee.setAge(35); 
+// Re-associating the object with a Hibernate session
+session.beginTransaction();
+session.update(employee);`
+
+Removed State
+When an object is deleted from the database, it enters the removed state. This means that the object is no longer associated with the database, and any attempts to modify it or re-associate it with a Hibernate session will result in an exception.
+
+Code Example:
+
+`// Loading an existing object into a Hibernate session
+Session session = HibernateUtil.getSessionFactory().openSession();
+Employee employee = session.get(Employee.class, 1L); 
+// Deleting the object from the database and entering the Removed state
+session.beginTransaction();
+session.delete(employee);`
+
+Hibernate Life Cycle Transitions
+Now that we have covered all the Hibernate life cycle states, let’s take a look at the transitions that occur between them.
+
+Transient -> Persistent
+The transient object becomes persistent when it is associated with a Hibernate session using the “save()” or “persist()” methods.
+
+Code Example:
+
+`// Creating a new object in the transient state
+Employee employee = new Employee();
+employee.setName("John");
+employee.setAge(30);
+// Associating the object with a Hibernate session and entering the Persistent state
+Session session = HibernateUtil.getSessionFactory().openSession();
+session.beginTransaction();
+session.save(employee);`
+
+Persistent -> Detached
+A persistent object becomes detached when the Hibernate session is closed, or the object is explicitly evicted from the session.
+
+Code Example:
+
+`// Loading an existing object into a Hibernate session and entering the Persistent state
+Session session = HibernateUtil.getSessionFactory().openSession();
+Employee employee = session.get(Employee.class, 1L);
+// Evicting the object from the session and entering the Detached state
+session.evict(employee);`
+
+Detached -> Persistent
+A detached object becomes persistent when it is re-associated with a Hibernate session using the “update()” or “merge()” methods.
+
+Code Example:
+
+`// Loading an existing object into a Hibernate session and entering the Persistent state
+Session session = HibernateUtil.getSessionFactory().openSession();
+Employee employee = session.get(Employee.class, 1L);
+// Evicting the object from the session and entering the Detached state
+session.evict(employee);
+// Modifying the object in the Detached state
+employee.setAge(35);
+// Re-associating the object with a Hibernate session and entering the Persistent state
+session.beginTransaction();
+session.update(employee);`
+
+Persistent -> Removed
+A persistent object becomes removed when it is deleted from the database using the “delete()” method.
+
+Code Example:
+
+`// Loading an existing object into a Hibernate session and entering the Persistent state
+Session session = HibernateUtil.getSessionFactory().openSession();
+Employee employee = session.get(Employee.class, 1L);
+// Deleting the object from the database and entering the Removed state
+session.beginTransaction();
+session.delete(employee);`
     
 **Refference**
   <Br>
